@@ -1,3 +1,1 @@
-export function test(name: string): string {
-    return "Hello, " + name;
-}
+export * from './bundle-manifest';
