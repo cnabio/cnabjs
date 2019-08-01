@@ -108,7 +108,27 @@ export interface Credential {
     required?: boolean;
 }
 
-export type Definition = object;  // We're not in the business of validating JSON Schemas (at least for now)
+// We're not in the business of trying to capture the whole of JSON Schema,
+// but it's useful to surface bits of it for tooling.
+/**
+ * The schema of a value (output or parameter). This will be a JSON Schema and
+ * can contain the full range of JSON Schema options; the Definition interface
+ * restricts itself to key information for common tooling scenarios.
+ */
+export interface Definition {
+    /**
+     * The underlying data type of the value.
+     */
+    type?: 'number' | 'integer' | 'string' | 'boolean';  // TODO: what does CNAB expect us to support?
+    /**
+     * The default value.
+     */
+    default?: any;
+    /**
+     * The permitted values of the value.
+     */
+    enum?: any[];
+}
 
 /**
  * An application image used in a bundle.
