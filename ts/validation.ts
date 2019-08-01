@@ -2,26 +2,73 @@ import { Bundle } from "./bundle-manifest";
 import * as ajv from 'ajv';
 import { cantHappen } from "./utils/never";
 
+/**
+ * Indicates that a parameter value is valid according to its schema.
+ */
 export interface Valid {
+    /**
+     * Indicates that the parameter value is valid according to its schema.
+     */
     readonly isValid: true;
 }
 
+/**
+ * Indicates that a parameter value is invalid according to its schema.
+ */
 export interface Invalid {
+    /**
+     * Indicates that a parameter value is invalid according to its schema.
+     */
     readonly isValid: false;
+    /**
+     * The reason the value is invalid.
+     */
     readonly reason: string;
 }
 
+/**
+ * Indicates whether a parameter value is valid according to its schema.
+ */
 export type Validity = Valid | Invalid;
 
+/**
+ * Provides parameter value validation for a bundle.
+ */
 export interface BundleParameterValidator {
+    /**
+     * Determines whether a value is a valid value for a parameter.
+     * @param parameter The name of the parameter.
+     * @param value The value to validate.
+     * @returns Whether the value is valid for the parameter.
+     */
     validate(parameter: string, value: string | number | boolean): Validity;
+    /**
+     * Determines whether a text string represents a valid value for a parameter.
+     * This is useful when the value comes from a user interface such as a HTML
+     * input box.
+     * @param parameter The name of the parameter.
+     * @param valueText The string to validate.
+     * @returns Whether the string represents a valid value for the parameter.
+     */
     validateText(parameter: string, valueText: string): Validity;
 }
 
-export class Validator implements BundleParameterValidator {
+/**
+ * Provides parameter value validation for a bundle.
+ */
+export class Validator {
+    /**
+     * Creates a parameter validator for a CNAB bundle.
+     * @param bundle The bundle containing parameter declarations and definitions.
+     * @returns An object which can be used to perform parameter validation
+     * according to the schema defined in the bundle.
+     */
     static for(bundle: Bundle): BundleParameterValidator {
-        return new Validator(bundle);
+        return new ValidatorImpl(bundle);
     }
+}
+
+class ValidatorImpl implements BundleParameterValidator {
 
     constructor(private readonly bundle: Bundle) { }
 
