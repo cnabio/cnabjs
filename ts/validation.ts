@@ -27,7 +27,7 @@ export class Validator implements BundleParameterValidator {
     validate(parameter: string, value: string | number | boolean): Validity {
         const schema = this.parameterSchema(parameter);
         if (!schema) {
-            return { isValid: false, reason: 'Bundle does not specify valid parameter values' };
+            return { isValid: false, reason: 'Bundle does not specify valid parameter values' };  // TODO: more precise error message
         }
 
         const validator = ajv.default();
@@ -51,6 +51,9 @@ export class Validator implements BundleParameterValidator {
             return undefined;
         }
         const parameterInfo = this.bundle.parameters[parameter];
+        if (!parameterInfo) {
+            return undefined;
+        }
         const definition = this.bundle.definitions[parameterInfo.definition];
         return definition;
     }
