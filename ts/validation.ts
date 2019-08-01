@@ -1,5 +1,6 @@
 import { Bundle } from "./bundle-manifest";
 import * as ajv from 'ajv';
+import { cantHappen } from "./utils/never";
 
 export interface Valid {
     readonly isValid: true;
@@ -42,8 +43,37 @@ export class Validator implements BundleParameterValidator {
     }
 
     validateText(parameter: string, valueText: string): Validity {
-        // TODO: type coercion
-        return this.validate(parameter, valueText);
+        const schema = this.parameterSchema(parameter);
+        if (!schema) {
+            return { isValid: false, reason: 'Bundle does not specify valid parameter values' };  // TODO: more precise error message
+        }
+
+        const targetType = schema.type || 'string';
+
+        switch (targetType) {
+            case 'string':
+                return this.validate(parameter, valueText);
+            case 'integer':
+                const intValue = Number.parseInt(valueText, 10);
+                if (isNaN(intValue)) {
+                    return { isValid: false, reason: 'The value must be a whole number' };
+                }
+                return this.validate(parameter, intValue);
+            case 'number':
+                const floatValue = Number.parseFloat(valueText);
+                if (isNaN(floatValue)) {
+                    return { isValid: false, reason: 'The value must be a number' };
+                }
+                return this.validate(parameter, floatValue);
+            case 'boolean':
+                const boolValue = valueText.toLowerCase() === 'true' ? true : (valueText.toLowerCase() === 'false' ? false : undefined);
+                if (boolValue === undefined) {
+                    return { isValid: false, reason: 'The value must be either "true" or "false"' };
+                }
+                return this.validate(parameter, boolValue);
+        }
+
+        return cantHappen(targetType);
     }
 
     private parameterSchema(parameter: string) {

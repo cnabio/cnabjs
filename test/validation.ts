@@ -15,6 +15,8 @@ const TEST_BUNDLE: cnab.Bundle = {
         lengthyString: { type: 'string', minLength: 4, maxLength: 7 },
         simpleInt: { type: 'integer' },
         constrainedInt: { type: 'integer', minimum: 1, maximum: 100 },
+        simpleFloat: { type: 'number' },
+        simpleBool: { type: 'boolean' },
     },
 
     parameters: {
@@ -22,6 +24,8 @@ const TEST_BUNDLE: cnab.Bundle = {
         lengthyString: { definition: 'lengthyString', destination: { } },
         simpleNum: { definition: 'simpleInt', destination: {} },
         constrainedNum: { definition: 'constrainedInt', destination: { } },
+        simpleFloat: { definition: 'simpleFloat', destination: {} },
+        simpleBool: { definition: 'simpleBool', destination: {} },
         noDef: { definition: 'doesnt have one', destination: { } },
     },
 };
@@ -63,13 +67,23 @@ describe('a string parameter', () => {
         expectInvalid(validity12);
     });
 
+    it('should accept a string value via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleString', 'some text');
+        expectValid(validity);
+    });
+
 });
 
-describe('a numeric parameter', () => {
+describe('an integer parameter', () => {
 
-    it('should accept a numeric value', () => {
+    it('should accept an integer value', () => {
         const validity = TEST_VALIDATOR.validate('simpleNum', 123);
         expectValid(validity);
+    });
+
+    it('should not accept a value with a fractional part', () => {
+        const validity = TEST_VALIDATOR.validate('simpleNum', 123.5);
+        expectInvalid(validity);
     });
 
     it('should not accept a string value', () => {
@@ -86,6 +100,76 @@ describe('a numeric parameter', () => {
         expectInvalid(validity0);
         const validity150 = TEST_VALIDATOR.validate('constrainedNum', 150);
         expectInvalid(validity150);
+    });
+
+    it('should accept a stringised number via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleNum', '123');
+        expectValid(validity);
+    });
+
+    it('should not accept a stringised non-number via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleNum', 'xyz123');
+        expectInvalid(validity);
+    });
+
+});
+
+describe('a number parameter', () => {
+
+    it('should accept an integer value', () => {
+        const validity = TEST_VALIDATOR.validate('simpleFloat', 123);
+        expectValid(validity);
+    });
+
+    it('should accept a value with a fractional part', () => {
+        const validity = TEST_VALIDATOR.validate('simpleFloat', 123.5);
+        expectValid(validity);
+    });
+
+    it('should not accept a string value', () => {
+        const validity = TEST_VALIDATOR.validate('simpleFloat', '123');
+        expectInvalid(validity);
+    });
+
+    it('should accept a stringised number via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleFloat', '123');
+        expectValid(validity);
+    });
+
+    it('should not accept a stringised non-number via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleFloat', 'xyz123');
+        expectInvalid(validity);
+    });
+
+});
+
+describe('a boolean parameter', () => {
+
+    it('should accept true', () => {
+        const validity = TEST_VALIDATOR.validate('simpleBool', true);
+        expectValid(validity);
+    });
+
+    it('should accept false', () => {
+        const validity = TEST_VALIDATOR.validate('simpleBool', false);
+        expectValid(validity);
+    });
+
+    it('should not accept a string value', () => {
+        const validity = TEST_VALIDATOR.validate('simpleBool', 'true');
+        expectInvalid(validity);
+    });
+
+    it('should accept a stringised boolean via the text API', () => {
+        const validityT = TEST_VALIDATOR.validateText('simpleBool', 'true');
+        expectValid(validityT);
+        const validityF = TEST_VALIDATOR.validateText('simpleBool', 'false');
+        expectValid(validityF);
+    });
+
+    it('should not accept a stringised non-boolean via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleBool', 'FILE_NOT_FOUND');
+        expectInvalid(validity);
     });
 
 });
