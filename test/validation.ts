@@ -30,7 +30,7 @@ const TEST_BUNDLE: cnab.Bundle = {
     },
 };
 
-const TEST_VALIDATOR = Validator.for(TEST_BUNDLE);
+const TEST_VALIDATOR = Validator.forBundle(TEST_BUNDLE);
 
 function expectValid(validity: Validity) {
     if (!validity.isValid) {
@@ -215,12 +215,12 @@ const DEFINITIONLESS_BUNDLE: cnab.Bundle = {
 describe('if the bundle has no...', () => {
 
     it('definitions, parameters should fail validation', () => {
-        const validity = Validator.for(DEFINITIONLESS_BUNDLE).validate('foo', 123);
+        const validity = Validator.forBundle(DEFINITIONLESS_BUNDLE).validate('foo', 123);
         expectInvalid(validity);
     });
 
     it('parameters, parameters should fail validation', () => {
-        const validity = Validator.for(PARAMETERLESS_BUNDLE).validate('foo', 123);
+        const validity = Validator.forBundle(PARAMETERLESS_BUNDLE).validate('foo', 123);
         expectInvalid(validity);
     });
 
