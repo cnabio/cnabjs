@@ -2,10 +2,10 @@
   "name": "cnabjs",
   "version": "0.0.2",
   "description": "A library for loading and working with CNAB (Cloud Native Application Bundle) manifests",
-  "main": "js/index.js",
-  "types": "js/index.d.ts",
+  "main": "js/ts/index.js",
+  "types": "js/ts/index.d.ts",
   "files": [
-    "js/**/*"
+    "js/ts/**/*"
   ],
   "scripts": {
     "compile": "tsc -p ./",
