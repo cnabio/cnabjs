@@ -128,6 +128,10 @@ export interface Definition {
      * The permitted values of the value.
      */
     enum?: any[];
+    /**
+     * Property bag to prevent object literal errors in TypeScript.
+     */
+    [key: string]: any;
 }
 
 /**
