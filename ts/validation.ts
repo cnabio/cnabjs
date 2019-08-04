@@ -56,14 +56,14 @@ export interface BundleParameterValidator {
 /**
  * Provides parameter value validation for a bundle.
  */
-export class Validator {
+export namespace Validator {
     /**
      * Creates a parameter validator for a CNAB bundle.
      * @param bundle The bundle containing parameter declarations and definitions.
      * @returns An object which can be used to perform parameter validation
      * according to the schema defined in the bundle.
      */
-    static for(bundle: Bundle): BundleParameterValidator {
+    export function forBundle(bundle: Bundle): BundleParameterValidator {
         return new ValidatorImpl(bundle);
     }
 }
