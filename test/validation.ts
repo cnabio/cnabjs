@@ -86,6 +86,11 @@ describe('an integer parameter', () => {
         expectInvalid(validity);
     });
 
+    it('should not accept a value in scientific notation', () => {
+        const validity = TEST_VALIDATOR.validate('simpleNum', '1.23e5');
+        expectInvalid(validity);
+    });
+
     it('should not accept a string value', () => {
         const validity = TEST_VALIDATOR.validate('simpleNum', '123');
         expectInvalid(validity);
@@ -107,8 +112,18 @@ describe('an integer parameter', () => {
         expectValid(validity);
     });
 
+    it('should not accept a stringised number in scientific notation via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleNum', '1.23e5');
+        expectInvalid(validity);  // Because Duffle would not accept it on the command line
+    });
+
+    it('should not accept a stringised number with fractional component via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleNum', '123.5');
+        expectInvalid(validity);
+    });
+
     it('should not accept a stringised non-number via the text API', () => {
-        const validity = TEST_VALIDATOR.validateText('simpleNum', 'xyz123');
+        const validity = TEST_VALIDATOR.validateText('simpleNum', '123x');
         expectInvalid(validity);
     });
 
@@ -126,6 +141,11 @@ describe('a number parameter', () => {
         expectValid(validity);
     });
 
+    it('should not accept a value in scientific notation', () => {
+        const validity = TEST_VALIDATOR.validate('simpleNum', '1.23456e2');
+        expectInvalid(validity);
+    });
+
     it('should not accept a string value', () => {
         const validity = TEST_VALIDATOR.validate('simpleFloat', '123');
         expectInvalid(validity);
@@ -136,8 +156,13 @@ describe('a number parameter', () => {
         expectValid(validity);
     });
 
+    it('should not accept a stringised number in scientific notation via the text API', () => {
+        const validity = TEST_VALIDATOR.validateText('simpleNum', '1.23e5');
+        expectInvalid(validity);  // Because Duffle would not accept it on the command line
+    });
+
     it('should not accept a stringised non-number via the text API', () => {
-        const validity = TEST_VALIDATOR.validateText('simpleFloat', 'xyz123');
+        const validity = TEST_VALIDATOR.validateText('simpleFloat', '123abc');
         expectInvalid(validity);
     });
 
