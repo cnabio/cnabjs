@@ -101,15 +101,21 @@ class ValidatorImpl implements BundleParameterValidator {
             case 'string':
                 return this.validate(parameter, valueText);
             case 'integer':
-                const intValue = Number.parseInt(valueText, 10);
-                if (isNaN(intValue)) {
+                const intValue = Number(valueText);
+                if (!Number.isInteger(intValue)) {
                     return { isValid: false, reason: 'The value must be a whole number' };
+                }
+                if (valueText.toLowerCase().includes('e')) {
+                    return { isValid: false, reason: 'The value must be a whole number' };  // JS allows scientific notation but CNAB tools are not likely to accept it
                 }
                 return this.validate(parameter, intValue);
             case 'number':
-                const floatValue = Number.parseFloat(valueText);
+                const floatValue = Number(valueText);
                 if (isNaN(floatValue)) {
                     return { isValid: false, reason: 'The value must be a number' };
+                }
+                if (valueText.toLowerCase().includes('e')) {
+                    return { isValid: false, reason: 'The value must be a number' };  // JS allows scientific notation but CNAB tools are not likely to accept it
                 }
                 return this.validate(parameter, floatValue);
             case 'boolean':
