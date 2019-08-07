@@ -25,4 +25,22 @@ export namespace Parameters {
         return parameter.applyTo.includes(actionName);
     }
 
+    /**
+     * Gets whether a particular parameter is required to be specified.
+     * @param bundle The bundle containg the parameters.
+     * @param parameterName The name of the parameter to check.
+     * @returns Whether the parameter is required.
+     */
+    export function isRequired(bundle: Bundle, parameterName: string): boolean {
+        if (!bundle.parameters) {
+            return false;
+        }
+
+        const parameter = bundle.parameters[parameterName];
+        if (!parameter) {
+            return false;
+        }
+
+        return parameter.required || false;
+    }
 }
