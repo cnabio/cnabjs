@@ -11,7 +11,7 @@ export interface Bundle {
      */
     credentials?: { [key: string]: Credential };
     /**
-     * Extension-defined data.
+     * Tool-specific data associated with the bundle.
      */
     custom?: { [key: string]: any };
     /**

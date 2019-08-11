@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.5
+
+* Added claims schema
+
 ## 0.0.4
 
 * Added method to check if a parameter is required
